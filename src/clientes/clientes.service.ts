@@ -1,27 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm'; // <--- Importante
 import { Repository } from 'typeorm';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
-import { Cliente } from './entities/cliente.entity';
+import { Cliente } from './entities/cliente.entity'; // <--- Importante
 
 @Injectable()
 export class ClientesService {
   
+  // 👇 1. Inyectamos el Repositorio (la conexión a la DB)
   constructor(
     @InjectRepository(Cliente)
     private clientesRepository: Repository<Cliente>,
   ) {}
 
   create(createClienteDto: CreateClienteDto) {
-    const nuevoCliente = this.clientesRepository.create(createClienteDto);
-    return this.clientesRepository.save(nuevoCliente);
+    const nuevo = this.clientesRepository.create(createClienteDto);
+    return this.clientesRepository.save(nuevo);
   }
 
   findAll() {
-    return this.clientesRepository.find({
-        order: { id: 'DESC' } 
-    });
+    return this.clientesRepository.find(); 
   }
 
   findOne(id: number) {
@@ -29,10 +28,10 @@ export class ClientesService {
   }
 
   update(id: number, updateClienteDto: UpdateClienteDto) {
-    return `This action updates a #${id} cliente`;
+    return this.clientesRepository.update(id, updateClienteDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} cliente`;
+    return this.clientesRepository.delete(id);
   }
 }
